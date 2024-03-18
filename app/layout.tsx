@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Poppins, Roboto } from "next/font/google";
 import "./globals.css";
 import clsx from "clsx";
+import Navbar from "@/components/component/Navbar";
+import Footer from "@/components/component/Footer";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -26,7 +28,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={clsx(poppins.className, roboto.className)}>
+        <Navbar />
         {children}
+        {/* <Footer /> */}
       </body>
     </html>
   );
