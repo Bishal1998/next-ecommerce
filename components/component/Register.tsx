@@ -19,7 +19,7 @@ import SocialLogin from "./SocialLogin";
 import Link from "next/link";
 import { FaRegEyeSlash, FaRegEye } from "react-icons/fa";
 import { useState } from "react";
-import { registerSchema } from "@/Schema";
+import { registerSchema } from "@/Schemas";
 import { register } from "@/actions/register";
 
 const Register = () => {
