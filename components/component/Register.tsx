@@ -19,25 +19,8 @@ import SocialLogin from "./SocialLogin";
 import Link from "next/link";
 import { FaRegEyeSlash, FaRegEye } from "react-icons/fa";
 import { useState } from "react";
-
-interface IRegisterForm {
-  email: string;
-  password: string;
-}
-
-const registerSchema = z.object({
-  email: z.string().email({ message: "Invalid email address" }),
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters long.")
-    .regex(
-      /^\S*(?=\S{8,})(?=\S*\d)(?=\S*[A-Z])(?=\S*[a-z])(?=\S*[!@#$%^&*? ])\S*$/,
-      {
-        message:
-          "Password must contain at least one uppercase, one lowercase, one number and one special characters",
-      }
-    ),
-});
+import { registerSchema } from "@/Schema";
+import { register } from "@/actions/register";
 
 const Register = () => {
   const [show, setShow] = useState(false);
@@ -50,8 +33,8 @@ const Register = () => {
     },
   });
 
-  const onSubmit = (data: IRegisterForm) => {
-    console.log(data);
+  const onSubmit = (data: z.infer<typeof registerSchema>) => {
+    register(data);
   };
 
   return (
