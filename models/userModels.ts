@@ -13,6 +13,10 @@ const userSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    subscribe: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

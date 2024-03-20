@@ -11,8 +11,7 @@ export const register = async (data: z.infer<typeof registerSchema>) => {
 
   if (!validateFields.success) return { error: "Invalid Fields" };
 
-  const { email, password } = validateFields.data;
-
+  const { email, password, subscribe } = validateFields.data;
   await ConnectToDb();
 
   const user = await User.findOne({ email });
@@ -25,6 +24,7 @@ export const register = async (data: z.infer<typeof registerSchema>) => {
   const newUser = new User({
     email,
     password: hashedPassword,
+    subscribe,
   });
 
   await newUser.save();

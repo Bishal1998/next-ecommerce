@@ -6,12 +6,14 @@ const registerSchema = z.object({
     .string()
     .min(8, "Password must be at least 8 characters long.")
     .regex(
-      /^\S*(?=\S{8,})(?=\S*\d)(?=\S*[A-Z])(?=\S*[a-z])(?=\S*[!@#$%^&*? ])\S*$/,
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*?`~()\-_+=\[{\]};:'",.<>\\|]).{8,}$/,
       {
         message:
           "Password must contain at least one uppercase, one lowercase, one number and one special characters",
       }
     ),
+  terms: z.boolean(),
+  subscribe: z.boolean(),
 });
 
 export { registerSchema };

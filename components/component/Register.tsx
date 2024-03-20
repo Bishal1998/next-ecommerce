@@ -18,23 +18,41 @@ import { Checkbox } from "@/components/ui/checkbox";
 import SocialLogin from "./SocialLogin";
 import Link from "next/link";
 import { FaRegEyeSlash, FaRegEye } from "react-icons/fa";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { registerSchema } from "@/Schemas";
 import { register } from "@/actions/register";
+import FormError from "./form-error";
+import FormSuccess from "./form-success";
 
 const Register = () => {
+  const [isPending, startTransition] = useTransition();
   const [show, setShow] = useState(false);
+  const [error, setError] = useState<string | undefined>("");
+  const [success, setSuccess] = useState<string | undefined>("");
 
   const registerForm = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
       email: "",
       password: "",
+      terms: false,
+      subscribe: false,
     },
   });
 
   const onSubmit = (data: z.infer<typeof registerSchema>) => {
-    register(data);
+    setError("");
+    setSuccess("");
+
+    if (!data.terms) return setError("Terms and conditions should be agreed.");
+
+    startTransition(() => {
+      register(data).then((value) => {
+        registerForm.reset();
+        setError(value.error);
+        setSuccess(value.success);
+      });
+    });
   };
 
   return (
@@ -67,6 +85,7 @@ const Register = () => {
                     className="text-dark-grey text-sm"
                     placeholder="Enter your e-mail"
                     {...field}
+                    disabled={isPending}
                   />
                 </FormControl>
                 <FormMessage className="text-red-400" />
@@ -101,8 +120,9 @@ const Register = () => {
                   <Input
                     type={show ? "text" : "password"}
                     className="text-dark-grey text-sm"
-                    placeholder="**********"
+                    placeholder={show ? "Password" : "********"}
                     {...field}
+                    disabled={isPending}
                   />
                 </FormControl>
                 <FormDescription className="font-poppins font-medium text-base text-dark-grey">
@@ -113,25 +133,52 @@ const Register = () => {
               </FormItem>
             )}
           />
-          <div className="flex items-center space-x-2 whitespace-nowrap">
-            <Checkbox id="terms" className="text-white" />
-            <label
-              htmlFor="terms"
-              className="text-base font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 font-poppins text-dark-grey"
-            >
-              Agree to our Terms of use and Privacy Policy
-            </label>
-          </div>
-          <div className="flex items-center space-x-2 whitespace-nowrap">
-            <Checkbox id="terms" className="text-white" />
-            <label
-              htmlFor="terms"
-              className="text-base font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 font-poppins text-dark-grey"
-            >
-              Subscribe to our monthly newsletter
-            </label>
-          </div>
-          <Button type="submit" className="text-white text-base">
+          <FormField
+            control={registerForm.control}
+            name="terms"
+            render={({ field }) => (
+              <FormItem className="space-x-3 h-4">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                    disabled={isPending}
+                    className="text-white text-xs"
+                  />
+                </FormControl>
+                <FormLabel className="text-base font-medium font-poppins text-dark-grey">
+                  Agree to our Terms of use and Privacy Policy
+                </FormLabel>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={registerForm.control}
+            name="subscribe"
+            render={({ field }) => (
+              <FormItem className="space-x-3 h-6">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                    disabled={isPending}
+                    className="text-white text-xs"
+                  />
+                </FormControl>
+                <FormLabel className="text-base font-medium font-poppins text-dark-grey">
+                  Subscribe to our monthly newsletter
+                </FormLabel>
+              </FormItem>
+            )}
+          />
+
+          <FormError message={error} />
+          <FormSuccess message={success} />
+          <Button
+            type="submit"
+            className="text-white text-base"
+            disabled={isPending}
+          >
             Register
           </Button>
         </form>
