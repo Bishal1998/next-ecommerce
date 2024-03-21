@@ -12,7 +12,6 @@ export const login = async (data: z.infer<typeof loginSchema>) => {
   if (!validateFields.success) return { error: "Invalid Fields" };
 
   const { email, password } = validateFields.data;
-  await ConnectToDb();
 
   const user = await User.findOne({ email });
   if (!user) {

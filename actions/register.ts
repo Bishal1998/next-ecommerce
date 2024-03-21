@@ -4,7 +4,7 @@ import { registerSchema } from "@/Schemas/";
 import User from "@/models/userModels";
 import * as z from "zod";
 import bcrypt from "bcryptjs";
-import ConnectToDb from "@/lib/db";
+import clientPromise from "@/lib/db";
 
 export const register = async (data: z.infer<typeof registerSchema>) => {
   const validateFields = registerSchema.safeParse(data);
@@ -12,8 +12,8 @@ export const register = async (data: z.infer<typeof registerSchema>) => {
   if (!validateFields.success) return { error: "Invalid Fields" };
 
   const { email, password, subscribe } = validateFields.data;
-  await ConnectToDb();
 
+  await clientPromise;
   const user = await User.findOne({ email });
   if (user) {
     return { error: "User already exists" };
