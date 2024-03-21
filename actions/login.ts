@@ -23,5 +23,5 @@ export const login = async (data: z.infer<typeof loginSchema>) => {
 
   if (!hashedPassword) return { error: "Password didnot match" };
 
-  return { success: "User registered Successfully" };
+  return { success: "Logged in Successfully" };
 };
